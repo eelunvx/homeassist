@@ -26,11 +26,11 @@
             android:summary="@string/pref_websocket_mode_desc"
             android:title="@string/pref_websocket_mode"/>
 
-        <!--<CheckBoxPreference-->
-        <!--android:defaultValue="true"-->
-        <!--android:key="push_notification"-->
-        <!--android:summary="@string/pref_push_notification_desc"-->
-        <!--android:title="@string/pref_push_notification"/>-->
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="push_notification"
+            android:summary="@string/pref_push_notification_desc"
+            android:title="@string/pref_push_notification"/>
 
         <!--<Preference-->
         <!--android:dependency="push_notification"-->

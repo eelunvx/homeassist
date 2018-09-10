@@ -43,6 +43,10 @@ public class Changelog {
     static {
         items = new HashMap<>();
 
+        Changelog change40 = new Changelog(57, "Release v4.0", "09 Sep 2018");
+        change40.logs.add("Merged HA Notify for actionable notifications");
+        items.put(change40.versionCode, change40);
+
         Changelog change32d = new Changelog(56, "Release v3.2d", "09 Dec 2017");
         change32d.logs.add("Commands will now send via websocket if possible. Else it will fallback to REST API approach.");
         change32d.logs.add("yR sensor can now show weather icon correctly.");

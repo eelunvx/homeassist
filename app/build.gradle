@@ -29,6 +29,7 @@ task printVersion() << {
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
 //apply plugin: 'com.google.firebase.firebase-perf'
 
 repositories {
@@ -53,13 +54,12 @@ def buildTimestamp() {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.1"
     defaultConfig {
         applicationId "com.axzae.homeassistant"
-        minSdkVersion 17
+        minSdkVersion 23
         targetSdkVersion 27
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 57
+        versionName "4.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 

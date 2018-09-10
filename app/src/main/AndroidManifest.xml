@@ -122,19 +122,18 @@
         <activity android:name=".GroupActivity"/>
         <activity android:name=".MapActivity"/>
 
-        <!--<service-->
-        <!--android:name=".service.HaFirebaseMessagingService">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="com.google.firebase.MESSAGING_EVENT"/>-->
-        <!--</intent-filter>-->
-        <!--</service>-->
+        <service android:name=".service.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
-        <!--<service-->
-        <!--android:name=".service.HaFirebaseInstanceIDService">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>-->
-        <!--</intent-filter>-->
-        <!--</service>-->
+        <receiver
+            android:name=".service.ResponseReceiver"
+            android:enabled="true"
+            android:stopWithTask="false" />
+
+        <service android:name=".service.DataSyncService"/>
 
         <service android:name=".service.DataSyncService"/>
 

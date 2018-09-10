@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.axzae.homeassistant.AboutActivity;
 import com.axzae.homeassistant.BuildConfig;
@@ -17,17 +18,30 @@ import com.axzae.homeassistant.ChangelogActivity;
 import com.axzae.homeassistant.LibraryActivity;
 import com.axzae.homeassistant.R;
 import com.axzae.homeassistant.SettingsActivity;
+import com.axzae.homeassistant.model.HomeAssistantServer;
+import com.axzae.homeassistant.model.rest.FCMAndroidRequest;
+import com.axzae.homeassistant.model.rest.FCMAndroidResponse;
+import com.axzae.homeassistant.provider.ServiceProvider;
+import com.axzae.homeassistant.util.CommonUtil;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     int countDown = 5;
     SettingsActivity mActivity;
+    private HomeAssistantServer mServer;
+    private Call<FCMAndroidResponse> mCall;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //addPreferencesFromResource(R.xml.preferences);
+        mServer = CommonUtil.inflate(getActivity().getIntent().getExtras().getString("server"), HomeAssistantServer.class);
     }
 
     @Override
@@ -169,6 +183,39 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         Log.d("YouQi", "onSharedPreferenceChanged: " + key);
         if ("num_columns".equals(key)) {
             ((SettingsActivity) getActivity()).setActivityResult(Activity.RESULT_OK);
+        }
+        if ("push_notification".equals(key)){
+            boolean enabled = sharedPreferences.getBoolean("push_notification", false);
+            FCMAndroidRequest fcmAndroidRequest = new FCMAndroidRequest(FirebaseInstanceId.getInstance().getToken());
+            if (enabled){
+                mCall = ServiceProvider.getApiService(mServer.getBaseUrl()).postToken(mServer.getPassword(), fcmAndroidRequest);
+                mCall.enqueue(new Callback<FCMAndroidResponse>() {
+                    @Override
+                    public void onResponse(Call<FCMAndroidResponse> call, Response<FCMAndroidResponse> response) {
+                        Toast.makeText(getActivity().getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("REQUEST", "GOT RESPONSE");
+                    }
+
+                    @Override
+                    public void onFailure(Call<FCMAndroidResponse> call, Throwable t) {
+
+                    }
+                });
+            } else {
+                mCall = ServiceProvider.getApiService(mServer.getBaseUrl()).deleteToken(mServer.getPassword(), fcmAndroidRequest);
+                mCall.enqueue(new Callback<FCMAndroidResponse>() {
+                    @Override
+                    public void onResponse(Call<FCMAndroidResponse> call, Response<FCMAndroidResponse> response) {
+                        Toast.makeText(getActivity().getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("REQUEST", "GOT RESPONSE");
+                    }
+
+                    @Override
+                    public void onFailure(Call<FCMAndroidResponse> call, Throwable t) {
+
+                    }
+                });
+            }
         }
 //        Preference preference = findPreference(key);
 //        // Log.d(TAG, "Pref Value: " + sharedPreferences.getBoolean(getString(R.string.pref_key_reminder), false));

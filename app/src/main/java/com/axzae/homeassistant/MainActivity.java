@@ -569,15 +569,18 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
     private void setupWhatsNew() {
         final String prefKey = "whatsnew" + BuildConfig.VERSION_CODE;
 
-        Changelog changelog = Changelog.getLatest();
-        ChangelogView changelogView = new ChangelogView(this);
-        changelogView.loadLogs(changelog.logs);
-        new MaterialDialog.Builder(this)
-                .title("Community Edition")
-                .customView(changelogView, true)
-                .positiveText(getString(R.string.action_gotit))
-                .positiveColorRes(R.color.md_blue_500)
-                .show();
+        if (!mSharedPref.getBoolean(prefKey, false)){
+            Changelog changelog = Changelog.getLatest();
+            ChangelogView changelogView = new ChangelogView(this);
+            changelogView.loadLogs(changelog.logs);
+            new MaterialDialog.Builder(this)
+                    .title("Community Edition")
+                    .customView(changelogView, true)
+                    .positiveText(getString(R.string.action_gotit))
+                    .positiveColorRes(R.color.md_blue_500)
+                    .show();
+            mSharedPref.edit().putBoolean(prefKey, true).apply();
+        }
     }
 
     @Override
@@ -685,6 +688,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
 
     private void showSettings() {
         Intent i = new Intent(this, SettingsActivity.class);
+        i.putExtra("server", CommonUtil.deflate(mCurrentServer));
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivityForResult(i, 2000);
         overridePendingTransition(R.anim.activity_open_translate, R.anim.activity_close_scale);

@@ -4,6 +4,8 @@ import com.axzae.homeassistant.model.Entity;
 import com.axzae.homeassistant.model.LogSheet;
 import com.axzae.homeassistant.model.rest.BootstrapResponse;
 import com.axzae.homeassistant.model.rest.CallServiceRequest;
+import com.axzae.homeassistant.model.rest.FCMAndroidRequest;
+import com.axzae.homeassistant.model.rest.FCMAndroidResponse;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -47,6 +50,15 @@ public interface RestAPIService {
 
     @GET("/api/logbook/{timestamp}")
     Call<ArrayList<LogSheet>> getLogbook(@Header("x-ha-access") String password, @Path("timestamp") String domain);
+
+    @POST("/api/notify.fcm-android")
+    Call<FCMAndroidResponse> postToken(@Header("x-ha-access") String password, @Body FCMAndroidRequest token);
+
+    @POST("/api/notify.fcm-android/callback")
+    Call<FCMAndroidResponse> postFCMCallback(@Header("x-ha-access") String password, @Body FCMAndroidRequest action);
+
+    @HTTP(method = "DELETE", path = "/api/notify.fcm-android", hasBody = true)
+    Call<FCMAndroidResponse> deleteToken(@Header("x-ha-access") String password, @Body FCMAndroidRequest token);
 
 //    @GET("api/settings/all")
 //    Call<RetrieveSettingsResponse> getSettings(
